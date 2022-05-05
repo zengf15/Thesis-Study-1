@@ -1,0 +1,71 @@
+---
+title: "Thesis-Study-1"
+author: "Fanyi Zeng"
+date: '2022-05-05'
+output: github_document
+---
+
+```{r setup, include=FALSE, message=FALSE, EVAL=FALSE}
+Study1 <- read.csv("Study 1 Dataset.csv")
+library(tidymodels)
+library(corrplot)
+library('Hmisc')
+```
+
+In my study 1, I used attachment dimensions (attachment anxiety and avoidance) to predict the choice of strategies to cope with typical interpersonal conflicts in general close relationships (parent-children, partners, friends). 
+
+After correcting for p values, anxiety was significantly, negatively correlated with positive reappraisal, and avoidance was significantly, negatively correlated with relational savoring. All three strategies were significantly, positively correlated with one another.
+
+To cope with interpersonal stress, more anxiously attached individuals are less likely to use positive reappraisal, i.e., to change their perspectives of a stressor from negative to positive. More avoidantly attached individuals are less likely to use relational savoring, i.e., to reflect on pleasant memories of the relationship to feel more secure. 
+
+People who are likely to use one strategy are also likely to use other strategies. Less avoidantly attached individuals are more likely to use relational savoring, as well as the other two strategies. Less anxiously attached individuals are more likely to use positive reappraisal, as well as the other two strategies. As such, more securely attached individuals are more likely to be open to using all three strategies.
+
+```{r cor1}
+cor1<-rcorr(as.matrix(Study1[,c(44:48)]))
+corrplot(cor1$r, type="upper", order="hclust", 
+         p.mat = cor1$p, sig.level = 0.05, insig = "blank")
+```
+
+The above relationships between one attachment dimension and strategy use held when controlling for the other dimension.
+
+```{r modelsI}
+m1 <- lm(PosReap ~ Anxiety + Avoidance, Study1)
+summary(m1)
+m2 <- lm(RelSav ~ Anxiety + Avoidance, Study1)
+summary(m2)
+m3 <- lm(PosDist ~ Anxiety + Avoidance, Study1)
+summary(m3)
+```
+
+In terms of goals, more anxiously attached individuals were significantly, less motivated to feel more positive about the stressor (after p value correction). All four goals were significantly, positively correlated with one another.
+
+```{r cor2}
+cor2<-rcorr(as.matrix(Study1[,c(35:38,44,45)]))
+corrplot(cor2$r, type="upper", order="hclust", 
+         p.mat = cor2$p, sig.level = 0.05, insig = "blank")
+```
+
+The above relationships between one attachment dimension and ER goals held when controlling for the other dimension.
+
+```{r modelsII}
+m4 <- lm(LessNegConf ~ Anxiety + Avoidance, Study1)
+summary(m4)
+m5 <- lm(MorePosC ~ Anxiety + Avoidance, Study1)
+summary(m5)
+m6 <- lm(LessNegLife ~ Anxiety + Avoidance, Study1)
+summary(m6)
+m7 <- lm(MorePosLife ~ Anxiety + Avoidance, Study1)
+summary(m7)
+```
+
+As a post-hoc analysis, I also found that anxiety predicted less PR than PD, and avoidance predicted less RS than PD or PR. 
+Positive reappraisal was not a favorable strategy for more anxiously attached individuals, just as relational savoring was not an acceptable strategy for more avoidantly attached individuals. Furthermore, positive distraction seems to be an appropriate strategy for more insecurely attached individuals to cope with typical interpersonal conflicts.
+
+```{r cor3}
+cor3<-rcorr(as.matrix(Study1[,c(44,45,49:51)]))
+corrplot(cor3$r, type="upper", order="hclust", 
+         p.mat = cor3$p, sig.level = 0.05, insig = "blank")
+```
+
+In Study 2, I will try to replicate these findings, but in the context of dealing with a recent conflict in a specific close relationship. I will also ask people to choose one of the three strategies to cope.
+
